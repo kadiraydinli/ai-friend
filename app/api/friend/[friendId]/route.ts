@@ -28,7 +28,8 @@ export async function PATCH(
 
         const friend = await prismadb.friend.update({
             where: {
-                id: params.friendId
+                id: params.friendId,
+                userId: user.id,
             },
             data: {
                 categoryId,
