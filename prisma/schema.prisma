@@ -41,7 +41,7 @@ model Friend {
 }
 
 enum Role {
-  userId
+  user
   system
 }
 
@@ -55,7 +55,7 @@ model Message {
   friendId String
   userId   String
 
-  friend Friend @relation(fields: [friendId], references: [id])
+  friend Friend @relation(fields: [friendId], references: [id], onDelete: Cascade)
 
   @@index([friendId])
 }
