@@ -41,9 +41,9 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({
                 role="system"
                 content={`Hello, I am ${friend.name}, ${friend.description}`}
             />
-            {messages.map((message) => (
+            {messages.map((message, index) => (
                 <ChatMessage
-                    key={message.src}
+                    key={`${message.src}-${index}`}
                     isLoading={isLoading}
                     {...message}
                 />
