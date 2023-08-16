@@ -30,7 +30,7 @@ export class MemoryManager {
 
     public async vectorSearch(
         recentChatHistory: string,
-        companionFileName: string
+        friendFileName: string
     ) {
         const pineconeClient = <PineconeClient>this.vectorDBClient;
 
@@ -44,7 +44,7 @@ export class MemoryManager {
         );
 
         const similarDocs = await vectorStore
-            .similaritySearch(recentChatHistory, 3, { fileName: companionFileName })
+            .similaritySearch(recentChatHistory, 3, { fileName: friendFileName })
             .catch((err) => {
                 console.log("WARNING: failed to get vector search results.", err);
             });
@@ -59,17 +59,17 @@ export class MemoryManager {
         return MemoryManager.instance;
     }
 
-    private generateRedisCompanionKey(friendKey: FriendKey): string {
+    private generateRedisFriendKey(friendKey: FriendKey): string {
         return `${friendKey.friendName}-${friendKey.modelName}-${friendKey.userId}`;
     }
 
     public async writeToHistory(text: string, friendKey: FriendKey) {
         if (!friendKey || typeof friendKey.userId == "undefined") {
-            console.log("Companion key set incorrectly");
+            console.log("Friend key set incorrectly");
             return "";
         }
 
-        const key = this.generateRedisCompanionKey(friendKey);
+        const key = this.generateRedisFriendKey(friendKey);
         const result = await this.history.zadd(key, {
             score: Date.now(),
             member: text,
@@ -80,11 +80,11 @@ export class MemoryManager {
 
     public async readLatestHistory(friendKey: FriendKey): Promise<string> {
         if (!friendKey || typeof friendKey.userId == "undefined") {
-            console.log("Companion key set incorrectly");
+            console.log("Friend key set incorrectly");
             return "";
         }
 
-        const key = this.generateRedisCompanionKey(friendKey);
+        const key = this.generateRedisFriendKey(friendKey);
         let result = await this.history.zrange(key, 0, Date.now(), {
             byScore: true,
         });
@@ -99,7 +99,7 @@ export class MemoryManager {
         delimiter: string = "\n",
         friendKey: FriendKey
     ) {
-        const key = this.generateRedisCompanionKey(friendKey);
+        const key = this.generateRedisFriendKey(friendKey);
         if (await this.history.exists(key)) {
             console.log("User already has chat history");
             return;
