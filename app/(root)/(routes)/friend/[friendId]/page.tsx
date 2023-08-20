@@ -12,7 +12,6 @@ interface FriendIdPageProps {
 
 const FriendIdPage = async ({ params }: FriendIdPageProps) => {
     const { userId } = auth();
-    // TODO: Check subscription
 
     if (!userId) {
         return redirectToSignIn();

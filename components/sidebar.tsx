@@ -5,10 +5,16 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { RouteType } from "@/types";
 import { cn } from "@/lib/utils";
+import { useProModal } from "@/hooks/use-pro-modal";
 
-const Sidebar = () => {
+interface SidebarProps {
+    isPro: boolean;
+};
+
+const Sidebar: React.FC<SidebarProps> = ({ isPro }) => {
     const pathname = usePathname();
     const router = useRouter();
+    const proModal = useProModal();
 
     const routes: RouteType[] = [
         {
@@ -32,7 +38,9 @@ const Sidebar = () => {
     ];
 
     const onNavigate = (url: string, pro: boolean) => {
-        // TODO: Check if PRO
+        if (pro && !isPro) {
+            return proModal.onOpen();
+        }
 
         return router.push(url);
     }
